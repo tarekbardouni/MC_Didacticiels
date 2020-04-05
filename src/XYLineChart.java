@@ -46,7 +46,7 @@ public class XYLineChart extends JFrame {
     public static long Batch_Size_init, Batch_Size, Batch_Number, Increase_Factor;
     
     public XYLineChart() {
-        super("Monte Carlo Simulation of Pi");
+        super("Monte Carlo calculation of solid angle");
         JPanel chartPanel = createChartPanel();
         add(chartPanel, BorderLayout.CENTER);
         setSize(width, height);
@@ -57,7 +57,7 @@ public class XYLineChart extends JFrame {
     private JPanel createChartPanel() {
     String chartTitle = "";
     String xAxisLabel = "Sample size";
-    String yAxisLabel = "Pi value";
+    String yAxisLabel = "Analytical value";
     XYDataset dataset = (XYDataset) createDataset();    
     JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, xAxisLabel, yAxisLabel, dataset,PlotOrientation.VERTICAL, false, true, false);
     XYPlot plot = chart.getXYPlot();
@@ -80,14 +80,14 @@ public class XYLineChart extends JFrame {
     domain_min = (double) findMinimumDomainValue(dataset); 
     range_max = (double) findMaximumRangeValue(dataset) * 1.01; 
     range_min = (double) findMinimumRangeValue(dataset) * 0.99; 
-    if(PI > range_max){ 
-        range_max = PI * 1.01;
+    if(MonteCarloSolidAngle.Analytical_Omega > range_max){ 
+        range_max = MonteCarloSolidAngle.Analytical_Omega * 1.01;
     } ;
-    if(PI < range_min){ 
-        range_min = PI * 0.99;
+    if(MonteCarloSolidAngle.Analytical_Omega < range_min){ 
+        range_min = MonteCarloSolidAngle.Analytical_Omega * 0.99;
     } ;
         
-    if(MonteCarloPi.Batch_Size / MonteCarloPi.Batch_Size_init > 400 )   { 
+    if(MonteCarloSolidAngle.Batch_Size / MonteCarloSolidAngle.Batch_Size_init > 400 )   { 
         LogAxis xAxis = new LogAxis();  
         xAxis.setBase(10);
         xAxis.setLabel("Sample size");
@@ -103,7 +103,7 @@ public class XYLineChart extends JFrame {
         yAxis.setRange(range_min, range_max);
         DecimalFormat format = (DecimalFormat)DecimalFormat.getNumberInstance(Locale.ENGLISH);
         yAxis.setNumberFormatOverride(format);
-        yAxis.setLabel("Pi value");
+        yAxis.setLabel("Solid Angle value");
         plot.setRangeAxis(yAxis);
         
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
@@ -118,20 +118,20 @@ public class XYLineChart extends JFrame {
         plot.getDomainAxis().setLabelFont(font2);
         plot.getRangeAxis().setLabelFont(font2);        
 
-// add a labelled marker for true PI
-        Marker True_PI = new ValueMarker(PI);
-        True_PI.setLabelOffsetType(LengthAdjustmentType.EXPAND);
-        True_PI.setPaint(Color.red);
-        True_PI.setStroke(new BasicStroke(1.0f));
-        True_PI.setLabel("True PI");
-        True_PI.setLabelFont(new Font("SansSerif", Font.PLAIN, 11));
-        True_PI.setLabelPaint(Color.red);
-        True_PI.setLabelAnchor(RectangleAnchor.TOP_LEFT);
-        True_PI.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
-        plot.addRangeMarker(True_PI);
+// add a labelled marker for Analytical_Omega
+        Marker Analytical_Value = new ValueMarker(MonteCarloSolidAngle.Analytical_Omega);
+        Analytical_Value.setLabelOffsetType(LengthAdjustmentType.EXPAND);
+        Analytical_Value.setPaint(Color.red);
+        Analytical_Value.setStroke(new BasicStroke(1.0f));
+        Analytical_Value.setLabel("Analytical Value");
+        Analytical_Value.setLabelFont(new Font("SansSerif", Font.PLAIN, 11));
+        Analytical_Value.setLabelPaint(Color.red);
+        Analytical_Value.setLabelAnchor(RectangleAnchor.TOP_LEFT);
+        Analytical_Value.setLabelTextAnchor(TextAnchor.BOTTOM_LEFT);
+        plot.addRangeMarker(Analytical_Value);
 
 // Saving the chart as an image
-    File imageFile = new File("MonteCarloPi.png");
+    File imageFile = new File("MonteCarloSolidAngle.png");
     try {
         ChartUtilities.saveChartAsPNG(imageFile, chart, width, height);
     } catch (IOException ex) {
@@ -142,11 +142,11 @@ public class XYLineChart extends JFrame {
  
     private XYSeriesCollection createDataset() {
         XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries series1 = new XYSeries("    Monte Carlo PI value       ");
-        int maxDataPoints = MonteCarloPi.PiTable.getRowCount();
+        XYSeries series1 = new XYSeries("    Monte Carlo Solid Angle value       ");
+        int maxDataPoints = MonteCarloSolidAngle.OmegaTable.getRowCount();
         for (int i = 0; i < maxDataPoints; i++) {
-            long x = (long) MonteCarloPi.PiTable.getValueAt(i, 0);
-            double y = (double) MonteCarloPi.PiTable.getValueAt(i, 1);
+            long x = (long) MonteCarloSolidAngle.OmegaTable.getValueAt(i, 0);
+            double y = (double) MonteCarloSolidAngle.OmegaTable.getValueAt(i, 1);
 // define 1st serie to plot
             series1.add(x,y); 
         }
