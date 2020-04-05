@@ -1,1 +1,0 @@
-A simple java code to calculate solid angle value by means of MC method. Study of simulation convergence vs sample size is performed and a plot is generated. MC values are compared to analitical value of the solid angle.
